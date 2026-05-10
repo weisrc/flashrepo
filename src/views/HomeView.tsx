@@ -15,6 +15,7 @@ import { AddGameButton } from "@/components/AddGameButton";
 import { TagSelect } from "@/components/TagSelect";
 import { Container } from "@/components/Container";
 import { useAppContext } from "@/components/AppContextProvider";
+import { Label } from "@/components/ui/label";
 
 export function HomeView() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -65,12 +66,15 @@ export function HomeView() {
       </nav>
 
       {isAdmin && (
-        <div className="flex gap-2">
-          <AddGameButton />
-          <Button asChild variant="ghost" size="sm" className="h-9">
-            <Link to="/tags">View Tags</Link>
-          </Button>
-        </div>
+        <>
+          <Label>Admin Actions</Label>
+          <div className="flex gap-2">
+            <AddGameButton />
+            <Button asChild variant="ghost" size="sm" className="h-9">
+              <Link to="/tags">View Tags</Link>
+            </Button>
+          </div>
+        </>
       )}
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
