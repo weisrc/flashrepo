@@ -15,7 +15,6 @@ import { AddGameButton } from "@/components/AddGameButton";
 import { TagSelect } from "@/components/TagSelect";
 import { Container } from "@/components/Container";
 import { useAppContext } from "@/components/AppContextProvider";
-import { Label } from "@/components/ui/label";
 
 export function HomeView() {
   const [searchQuery, setSearchQuery] = useState("");
