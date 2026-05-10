@@ -105,7 +105,7 @@ export function EditGameView() {
         <UpdateScreenshotButton gameId={game.id} />
         <Button onClick={() => window.location.reload()}>
           <RefreshCw />
-          Refresh Preview
+          Refresh
         </Button>
       </div>
 

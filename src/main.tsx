@@ -4,7 +4,9 @@ import App from "./App";
 import { AppContextProvider } from "./components/AppContextProvider";
 import { Toaster } from "@/components/ui/sonner";
 
-document.documentElement.classList.add("dark");
+if (!import.meta.env.DEV) {
+  document.addEventListener("contextmenu", (e) => e.preventDefault());
+}
 
 async function bootstrap() {
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

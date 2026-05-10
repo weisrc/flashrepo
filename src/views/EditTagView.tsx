@@ -27,6 +27,7 @@ export function EditTagView() {
   async function onSave() {
     await writeTag(tag!);
     toast.success("Tag saved successfully");
+    navigate("/tags");
   }
 
   async function onDelete() {
