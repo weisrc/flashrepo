@@ -46,14 +46,13 @@ export function HomeView() {
 
   return (
     <Container>
-      <nav className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+      <nav className="sticky top-0 z-40 py-3 bg-background/95">
         <div className="flex flex-col gap-2">
           <Input
             type="text"
             placeholder="Search games..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-9 border-border bg-muted text-foreground placeholder:text-muted-foreground"
           />
 
           <TagSelect
@@ -73,7 +72,7 @@ export function HomeView() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
         {filteredGames
           .sort((a, b) => {
             if (b.rating !== a.rating) {
