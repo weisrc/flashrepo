@@ -1,3 +1,4 @@
+import { RatingValue } from "@/components/Rating";
 import {
   BaseDirectory,
   readDir,
@@ -6,7 +7,7 @@ import {
   writeFile,
   readTextFile,
   readFile,
-  remove
+  remove,
 } from "@tauri-apps/plugin-fs";
 
 export type GameMetadata = {
@@ -14,6 +15,7 @@ export type GameMetadata = {
   title: string;
   description: string;
   tag_ids: string[];
+  rating: RatingValue;
 };
 
 export type WithTags<T> = T & {

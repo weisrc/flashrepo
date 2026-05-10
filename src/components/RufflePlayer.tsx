@@ -22,7 +22,6 @@ type Player = HTMLElement & {
 window.RufflePlayer.config = {
   autoplay: "on",
   splashScreen: false,
-  //   unmuteOverlay: "hidden",
 };
 const ruffle = window.RufflePlayer.newest();
 

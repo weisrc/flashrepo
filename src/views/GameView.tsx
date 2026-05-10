@@ -9,6 +9,7 @@ import { useAppContext } from "@/components/AppContextProvider";
 import { GameScreenshot } from "@/components/GameScreenshot";
 import { PlayButton } from "@/components/PlayButton";
 import { LoadingView } from "./LoadingView";
+import { Rating } from "@/components/Rating";
 
 export function GameView() {
   const { id } = useParams();
@@ -44,6 +45,8 @@ export function GameView() {
       </div>
 
       <h1 className="text-4xl">{game.title}</h1>
+
+      <Rating value={game.rating} />
 
       <p>{game.description}</p>
 

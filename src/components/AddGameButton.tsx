@@ -19,6 +19,7 @@ export function AddGameButton() {
       title: file.name.replace(/\.swf$/i, ""),
       description: "",
       tag_ids: [],
+      rating: 1,
     });
 
     await writeGameProgram(id, program);
@@ -27,12 +28,7 @@ export function AddGameButton() {
   }, []);
 
   return (
-    <Button
-      variant="default"
-      size="sm"
-      onClick={() => fileInputRef.current?.click()}
-      className="h-9"
-    >
+    <Button onClick={() => fileInputRef.current?.click()}>
       <input
         ref={fileInputRef}
         type="file"

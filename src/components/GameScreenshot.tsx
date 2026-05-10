@@ -9,7 +9,7 @@ export function GameScreenshot({ gameId }: { gameId: string }) {
 
   if (error) {
     return (
-      <div className="h-full w-full flex items-center justify-center">
+      <div className="w-full aspect-video flex items-center justify-center">
         <Gamepad2 className="w-16 h-16"/>
       </div>
     );
@@ -18,7 +18,7 @@ export function GameScreenshot({ gameId }: { gameId: string }) {
   return (
     <img
       src={toURL(getGameScreenshotPath(gameId))}
-      className="h-full w-full object-cover"
+      className="w-full aspect-video object-cover"
       onError={() => setError(true)}
     />
   );

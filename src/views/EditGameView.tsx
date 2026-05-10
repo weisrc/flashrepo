@@ -23,6 +23,7 @@ import { GameScreenshot } from "@/components/GameScreenshot";
 import { Container } from "@/components/Container";
 import { PlayButton } from "@/components/PlayButton";
 import { LoadingView } from "./LoadingView";
+import { Rating } from "@/components/Rating";
 
 export function EditGameView() {
   const { id } = useParams();
@@ -70,6 +71,13 @@ export function EditGameView() {
         placeholder="Write the game title here..."
       />
 
+      <Label>Rating</Label>
+
+      <Rating
+        value={game.rating}
+        onChange={(rating) => setGame({ ...game, rating })}
+      />
+
       <Label>Description</Label>
 
       <Textarea
@@ -82,7 +90,7 @@ export function EditGameView() {
         }
         rows={14}
         placeholder="Write the description here..."
-        className="border-border bg-background font-mono text-sm text-foreground placeholder:text-muted-foreground"
+        className="border-border bg-background text-sm text-foreground placeholder:text-muted-foreground"
       />
 
       <Label>Tags</Label>

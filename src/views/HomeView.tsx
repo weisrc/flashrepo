@@ -66,21 +66,26 @@ export function HomeView() {
       </nav>
 
       {isAdmin && (
-        <>
-          <Label>Admin Actions</Label>
-          <div className="flex gap-2">
-            <AddGameButton />
-            <Button asChild variant="ghost" size="sm" className="h-9">
-              <Link to="/tags">View Tags</Link>
-            </Button>
-          </div>
-        </>
+        <div className="flex gap-2">
+          <AddGameButton />
+          <Button asChild variant="ghost" size="sm" className="h-9">
+            <Link to="/tags">View Tags</Link>
+          </Button>
+        </div>
       )}
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        {filteredGames.map((g) => (
-          <GameCard key={g.id} value={g} />
-        ))}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        {filteredGames
+          .sort((a, b) => {
+            if (b.rating !== a.rating) {
+              return b.rating - a.rating;
+            }
+
+            return a.title.toLowerCase().localeCompare(b.title.toLowerCase());
+          })
+          .map((game) => (
+            <GameCard key={game.id} value={game} />
+          ))}
       </div>
     </Container>
   );

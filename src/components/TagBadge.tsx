@@ -16,7 +16,7 @@ export function TagBadge({ value, editable }: TagProps) {
 
   return (
     <Badge
-      className="cursor-pointer text-md h-8"
+      className="cursor-pointer"
       onClick={editable ? handleClick : undefined}
       style={{
         backgroundColor: value.color,
