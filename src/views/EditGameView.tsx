@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 import { UpdateProgramButton } from "@/components/UpdateProgramButton";
 import {
+  deleteGame,
   GameMetadata,
   getGameMetadata,
   WithTags,
@@ -25,6 +26,7 @@ import { LoadingView } from "./LoadingView";
 
 export function EditGameView() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [game, setGame] = useState<WithTags<GameMetadata>>();
 
@@ -41,6 +43,12 @@ export function EditGameView() {
     });
 
     toast.success("Metadata saved successfully");
+  }
+
+  async function onDeleteGame() {
+    deleteGame(game!.id);
+    toast.success("Game has been deleted");
+    navigate("/");
   }
 
   if (!game) {
@@ -104,6 +112,12 @@ export function EditGameView() {
       <Label>Screenshot Preview</Label>
 
       <GameScreenshot gameId={game.id} />
+
+      <Label>Danger Zone</Label>
+
+      <Button variant="destructive" onClick={onDeleteGame}>
+        Delete Game
+      </Button>
     </Container>
   );
 }

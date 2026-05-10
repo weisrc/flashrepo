@@ -6,6 +6,7 @@ import {
   writeFile,
   readTextFile,
   readFile,
+  remove
 } from "@tauri-apps/plugin-fs";
 
 export type GameMetadata = {
@@ -157,8 +158,15 @@ export async function writeTag(tag: Tag) {
 }
 
 export async function deleteTag(tagId: string) {
-  await writeTextFile(`tags/${tagId}.json`, "", {
+  await remove(`tags/${tagId}.json`, {
     baseDir: REPO,
+  });
+}
+
+export async function deleteGame(gameId: string) {
+  await remove(`games/${gameId}`, {
+    baseDir: REPO,
+    recursive: true,
   });
 }
 

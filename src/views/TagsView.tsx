@@ -16,7 +16,7 @@ export function TagsView() {
 
   async function createTag() {
     const id = crypto.randomUUID();
-    await writeTag({ name: "New Tag", id, color: "red" });
+    await writeTag({ name: "New Tag", id, color: "#ff4da6" });
     navigate(`/tags/${id}/edit`);
   }
 

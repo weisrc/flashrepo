@@ -8,8 +8,8 @@ Set `FLASHREPO_ADMIN` environment variable to `true` to enable admin mode:
 - Create tags
 - Add games
 - Edit games
-- Delete games (TODO)
-- Delete tags (TODO)
+- Delete games
+- Delete tags
 
 ## Disclaimer
 

@@ -1,8 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getTag, Tag, writeTag } from "@/lib/repo";
+import { deleteTag, getTag, listGameMetadata, Tag, writeTag } from "@/lib/repo";
 import { BackButton } from "@/components/BackButton";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { LoadingView } from "./LoadingView";
 
 export function EditTagView() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [tag, setTag] = useState<Tag>();
 
@@ -26,6 +27,25 @@ export function EditTagView() {
   async function onSave() {
     await writeTag(tag!);
     toast.success("Tag saved successfully");
+  }
+
+  async function onDelete() {
+    if (!tag) {
+      return;
+    }
+
+    for (const game of await listGameMetadata()) {
+      if (game.tag_ids.includes(tag.id)) {
+        toast.error(
+          `Cannot delete tag because it's still used by game "${game.title}"`,
+        );
+        return;
+      }
+    }
+
+    await deleteTag(tag!.id);
+    toast.success("Tag has been deleted");
+    navigate("/tags");
   }
 
   return (
@@ -59,6 +79,14 @@ export function EditTagView() {
         <Save />
         Save
       </Button>
+
+      <Label>Danger Zone</Label>
+
+      <Button variant="destructive" onClick={onDelete}>
+        Delete Tag
+      </Button>
+
+      <p>Make sure no other games are using this tag before deleting.</p>
     </Container>
   );
 }
