@@ -1,14 +1,14 @@
 import { setupRepo } from "@/lib/repo";
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
-import { appDataDir } from "@tauri-apps/api/path";
+import { appLocalDataDir } from "@tauri-apps/api/path";
 import { createContext, useContext, useEffect, useState } from "react";
 
 export const AppContext = createContext<{
   isAdmin: boolean;
-  appDataPath: string;
+  repoPath: string;
 }>({
   isAdmin: false,
-  appDataPath: "",
+  repoPath: "",
 });
 
 export function useAppContext() {
@@ -17,7 +17,7 @@ export function useAppContext() {
   return {
     isAdmin: appContext.isAdmin,
     toURL(path: string) {
-      return convertFileSrc(`${appContext.appDataPath}/${path}`);
+      return convertFileSrc(`${appContext.repoPath}/${path}`);
     },
   };
 }
@@ -28,13 +28,13 @@ export function AppContextProvider({
   children: React.ReactNode;
 }) {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [appDataPath, setAppDataPath] = useState<string>("");
+  const [repoPath, setRepoPath] = useState<string>("");
 
   useEffect(() => {
     invoke("is_admin").then((isAdmin) => setIsAdmin(!!isAdmin));
-    appDataDir().then(setAppDataPath);
+    appLocalDataDir().then(setRepoPath);
     setupRepo();
   }, []);
 
-  return <AppContext value={{ isAdmin, appDataPath }}>{children}</AppContext>;
+  return <AppContext value={{ isAdmin, repoPath: repoPath }}>{children}</AppContext>;
 }

@@ -29,14 +29,16 @@ export type Tag = {
   color: string; // CSS color string
 };
 
+const REPO = BaseDirectory.AppLocalData;
+
 export async function setupRepo() {
-  await mkdir("games", { baseDir: BaseDirectory.AppData, recursive: true });
-  await mkdir("tags", { baseDir: BaseDirectory.AppData, recursive: true });
+  await mkdir("games", { baseDir: REPO, recursive: true });
+  await mkdir("tags", { baseDir: REPO, recursive: true });
 }
 
 async function setupGameDir(gameId: string) {
   await mkdir(`games/${gameId}`, {
-    baseDir: BaseDirectory.AppData,
+    baseDir: REPO,
     recursive: true,
   });
 }
@@ -47,7 +49,7 @@ export function getGameScreenshotPath(gameId: string): string {
 
 export async function getGameProgramBlob(gameId: string): Promise<Blob> {
   const buffer = await readFile(`games/${gameId}/program.swf`, {
-    baseDir: BaseDirectory.AppData,
+    baseDir: REPO,
   });
 
   return new Blob([buffer], { type: "application/x-shockwave-flash" });
@@ -59,7 +61,7 @@ export async function writeGameMetadata(metadata: GameMetadata) {
     `games/${metadata.id}/metadata.json`,
     JSON.stringify(metadata),
     {
-      baseDir: BaseDirectory.AppData,
+      baseDir: REPO,
     },
   );
 }
@@ -76,11 +78,11 @@ async function hash(data: Uint8Array): Promise<string> {
 export async function writeGameProgram(gameId: string, program: Uint8Array) {
   await setupGameDir(gameId);
   await writeFile(`games/${gameId}/program.swf`, program, {
-    baseDir: BaseDirectory.AppData,
+    baseDir: REPO,
   });
   const programHash = await hash(program);
   await writeTextFile(`games/${gameId}/program.hash`, programHash, {
-    baseDir: BaseDirectory.AppData,
+    baseDir: REPO,
   });
 }
 
@@ -90,20 +92,20 @@ export async function writeGameScreenshot(
 ) {
   await setupGameDir(gameId);
   await writeFile(`games/${gameId}/screenshot.png`, screenshot, {
-    baseDir: BaseDirectory.AppData,
+    baseDir: REPO,
   });
 }
 
 export async function getGameMetadata(id: string): Promise<GameMetadata> {
   const text = await readTextFile(`games/${id}/metadata.json`, {
-    baseDir: BaseDirectory.AppData,
+    baseDir: REPO,
   });
   return JSON.parse(text);
 }
 
 export async function getTag(id: string): Promise<Tag> {
   const text = await readTextFile(`tags/${id}.json`, {
-    baseDir: BaseDirectory.AppData,
+    baseDir: REPO,
   });
   return JSON.parse(text);
 }
@@ -133,7 +135,7 @@ export async function withHash<T extends GameMetadata>(
   return Promise.all(
     games.map(async (game) => {
       const hash = await readTextFile(`games/${game.id}/program.hash`, {
-        baseDir: BaseDirectory.AppData,
+        baseDir: REPO,
       });
       return { ...game, hash };
     }),
@@ -142,7 +144,7 @@ export async function withHash<T extends GameMetadata>(
 
 export async function listGameMetadata(): Promise<GameMetadata[]> {
   return Promise.all(
-    (await readDir("games", { baseDir: BaseDirectory.AppData })).map((entry) =>
+    (await readDir("games", { baseDir: REPO })).map((entry) =>
       getGameMetadata(entry.name),
     ),
   );
@@ -150,19 +152,19 @@ export async function listGameMetadata(): Promise<GameMetadata[]> {
 
 export async function writeTag(tag: Tag) {
   await writeTextFile(`tags/${tag.id}.json`, JSON.stringify(tag), {
-    baseDir: BaseDirectory.AppData,
+    baseDir: REPO,
   });
 }
 
 export async function deleteTag(tagId: string) {
   await writeTextFile(`tags/${tagId}.json`, "", {
-    baseDir: BaseDirectory.AppData,
+    baseDir: REPO,
   });
 }
 
 export async function listTags(): Promise<Tag[]> {
   return Promise.all(
-    (await readDir("tags", { baseDir: BaseDirectory.AppData })).map((entry) =>
+    (await readDir("tags", { baseDir: REPO })).map((entry) =>
       getTag(entry.name.replace(/\.json$/, "")),
     ),
   );
