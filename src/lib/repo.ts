@@ -58,6 +58,14 @@ export async function getGameProgramBlob(gameId: string): Promise<Blob> {
   return new Blob([buffer], { type: "application/x-shockwave-flash" });
 }
 
+export async function getGameScreenshotBlob(gameId: string): Promise<Blob> {
+  const buffer = await readFile(getGameScreenshotPath(gameId), {
+    baseDir: REPO,
+  });
+
+  return new Blob([buffer], { type: "image/png" });
+}
+
 export async function writeGameMetadata(metadata: GameMetadata) {
   await setupGameDir(metadata.id);
   await writeTextFile(

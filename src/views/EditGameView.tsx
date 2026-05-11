@@ -3,6 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  getScreenshotableWindows,
+  getWindowScreenshot,
+  removeWindowScreenshot,
+} from "tauri-plugin-screenshots-api";
 
 import { UpdateProgramButton } from "@/components/UpdateProgramButton";
 import {
@@ -12,10 +17,11 @@ import {
   WithTags,
   withTags,
   writeGameMetadata,
+  writeGameScreenshot,
 } from "@/lib/repo";
 import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Save } from "lucide-react";
+import { Camera, Save } from "lucide-react";
 import { UpdateScreenshotButton } from "@/components/UpdateScreenshotButton";
 import { TagSelect } from "@/components/TagSelect";
 import { toast } from "sonner";
@@ -24,12 +30,18 @@ import { Container } from "@/components/Container";
 import { PlayButton } from "@/components/PlayButton";
 import { LoadingView } from "./LoadingView";
 import { Rating } from "@/components/Rating";
+import { readFile } from "@tauri-apps/plugin-fs";
 
 export function EditGameView() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [screenshotReloadKey, setScreenshotReloadKey] = useState(0);
   const [game, setGame] = useState<WithTags<GameMetadata>>();
+
+  function reloadScreenshot() {
+    setScreenshotReloadKey((v) => v + 1);
+  }
 
   useState(() => {
     getGameMetadata(id!)
@@ -50,6 +62,21 @@ export function EditGameView() {
     deleteGame(game!.id);
     toast.success("Game has been deleted");
     navigate("/");
+  }
+
+  async function onScreenshot() {
+    const windows = await getScreenshotableWindows();
+    const player = windows.find((w) => w.title == game!.title);
+    if (!player) {
+      toast.error("Window not found.");
+      return;
+    }
+    const path = await getWindowScreenshot(player.id);
+    const file = await readFile(path);
+    await writeGameScreenshot(game!.id, file);
+    await removeWindowScreenshot(player.id);
+    toast.success("Screenshot updated");
+    reloadScreenshot();
   }
 
   if (!game) {
@@ -110,16 +137,19 @@ export function EditGameView() {
         </Button>
 
         <UpdateProgramButton gameId={game.id} />
-        <UpdateScreenshotButton gameId={game.id} />
-        <Button onClick={() => window.location.reload()}>
-          <RefreshCw />
-          Refresh
+      </div>
+
+      <Label>Screenshot</Label>
+
+      <div className="flex items-center gap-2">
+        <UpdateScreenshotButton gameId={game.id} onUpdate={reloadScreenshot} />
+        <Button onClick={onScreenshot}>
+          <Camera />
+          Take Screenshot
         </Button>
       </div>
 
-      <Label>Screenshot Preview</Label>
-
-      <GameScreenshot gameId={game.id} />
+      <GameScreenshot gameId={game.id} key={screenshotReloadKey} />
 
       <Label>Danger Zone</Label>
 

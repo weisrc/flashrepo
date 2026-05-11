@@ -6,9 +6,10 @@ import { toast } from "sonner";
 
 type Props = {
   gameId: string;
+  onUpdate: () => void;
 };
 
-export function UpdateScreenshotButton({ gameId }: Props) {
+export function UpdateScreenshotButton({ gameId, onUpdate }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleClick = () => {
@@ -25,6 +26,7 @@ export function UpdateScreenshotButton({ gameId }: Props) {
       const buffer = await file.arrayBuffer();
       await writeGameScreenshot(gameId, new Uint8Array(buffer));
       toast.success("Screenshot updated successfully");
+      onUpdate?.();
     } finally {
       e.currentTarget.value = "";
     }
