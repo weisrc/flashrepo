@@ -3,11 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  getScreenshotableWindows,
-  getWindowScreenshot,
-  removeWindowScreenshot,
-} from "tauri-plugin-screenshots-api";
 
 import { UpdateProgramButton } from "@/components/UpdateProgramButton";
 import {
@@ -17,7 +12,6 @@ import {
   WithTags,
   withTags,
   writeGameMetadata,
-  writeGameScreenshot,
 } from "@/lib/repo";
 import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
@@ -30,7 +24,7 @@ import { Container } from "@/components/Container";
 import { PlayButton } from "@/components/PlayButton";
 import { LoadingView } from "./LoadingView";
 import { Rating } from "@/components/Rating";
-import { readFile } from "@tauri-apps/plugin-fs";
+import { emitTo, once } from "@tauri-apps/api/event";
 
 export function EditGameView() {
   const { id } = useParams();
@@ -65,18 +59,11 @@ export function EditGameView() {
   }
 
   async function onScreenshot() {
-    const windows = await getScreenshotableWindows();
-    const player = windows.find((w) => w.title == game!.title);
-    if (!player) {
-      toast.error("Window not found.");
-      return;
-    }
-    const path = await getWindowScreenshot(player.id);
-    const file = await readFile(path);
-    await writeGameScreenshot(game!.id, file);
-    await removeWindowScreenshot(player.id);
-    toast.success("Screenshot updated");
-    reloadScreenshot();
+    await emitTo("player", "screenshot-request", game!.id);
+    await once("screenshot-response", () => {
+      toast.success("Screenshot updated");
+      reloadScreenshot();
+    });
   }
 
   if (!game) {

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { LoadingView } from "./LoadingView";
+import { TagBadge } from "@/components/TagBadge";
 
 export function EditTagView() {
   const { id } = useParams();
@@ -73,6 +74,10 @@ export function EditTagView() {
         }}
         className="border border-border bg-muted p-0 h-10 w-20"
       />
+
+      <Label>Preview</Label>
+
+      <TagBadge value={tag} />
 
       <Label>Actions</Label>
 

@@ -10,6 +10,7 @@ Set `FLASHREPO_ADMIN` environment variable to `true` to enable admin mode:
 - Edit games
 - Delete games
 - Delete tags
+- Take screenshots
 
 ## Disclaimer
 
