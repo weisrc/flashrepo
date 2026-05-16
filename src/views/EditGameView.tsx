@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,7 @@ import {
 } from "@/lib/repo";
 import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
-import { Camera, Save } from "lucide-react";
+import { Camera } from "lucide-react";
 import { UpdateScreenshotButton } from "@/components/UpdateScreenshotButton";
 import { TagSelect } from "@/components/TagSelect";
 import { toast } from "sonner";
@@ -25,25 +25,27 @@ import { PlayButton } from "@/components/PlayButton";
 import { LoadingView } from "./LoadingView";
 import { Rating } from "@/components/Rating";
 import { emitTo, once } from "@tauri-apps/api/event";
+import { useAutoSaveState } from "@/lib/use-auto-save-state";
 
 export function EditGameView() {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [screenshotReloadKey, setScreenshotReloadKey] = useState(0);
-  const [game, setGame] = useState<WithTags<GameMetadata>>();
+  const [game, setGame, setGameRaw] =
+    useAutoSaveState<WithTags<GameMetadata>>(saveMetadata);
 
   function reloadScreenshot() {
     setScreenshotReloadKey((v) => v + 1);
   }
 
-  useState(() => {
+  useEffect(() => {
     getGameMetadata(id!)
       .then((m) => withTags([m]))
-      .then(([m]) => setGame(m));
-  });
+      .then(([m]) => setGameRaw(m));
+  }, []);
 
-  async function onSaveMetadata() {
+  async function saveMetadata() {
     await writeGameMetadata({
       ...game!,
       tag_ids: game!.tags.map((t) => t.id),
@@ -117,24 +119,16 @@ export function EditGameView() {
 
       <Label>Actions</Label>
 
-      <div className="flex items-center gap-2 flex-row">
-        <Button onClick={onSaveMetadata}>
-          <Save />
-          Save Metadata
-        </Button>
-
-        <UpdateProgramButton gameId={game.id} />
-      </div>
-
-      <Label>Screenshot</Label>
-
       <div className="flex items-center gap-2">
+        <UpdateProgramButton gameId={game.id} />
         <UpdateScreenshotButton gameId={game.id} onUpdate={reloadScreenshot} />
         <Button onClick={onScreenshot}>
           <Camera />
           Take Screenshot
         </Button>
       </div>
+
+      <Label>Screenshot</Label>
 
       <GameScreenshot gameId={game.id} key={screenshotReloadKey} />
 

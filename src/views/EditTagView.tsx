@@ -1,24 +1,24 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { deleteTag, getTag, listGameMetadata, Tag, writeTag } from "@/lib/repo";
 import { BackButton } from "@/components/BackButton";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/ui/button";
-import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { LoadingView } from "./LoadingView";
 import { TagBadge } from "@/components/TagBadge";
+import { useAutoSaveState } from "@/lib/use-auto-save-state";
 
 export function EditTagView() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [tag, setTag] = useState<Tag>();
+  const [tag, setTag, setTagRaw] = useAutoSaveState<Tag>(onSave);
 
   useEffect(() => {
-    getTag(id!).then(setTag);
+    getTag(id!).then(setTagRaw);
   }, []);
 
   if (!tag) {
@@ -78,13 +78,6 @@ export function EditTagView() {
       <Label>Preview</Label>
 
       <TagBadge value={tag} />
-
-      <Label>Actions</Label>
-
-      <Button onClick={onSave}>
-        <Save />
-        Save
-      </Button>
 
       <Label>Danger Zone</Label>
 
