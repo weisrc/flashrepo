@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 export function useWatchdog(onTimeout: () => void, timeout: number) {
-  let timeoutId: number;
+  let timeoutId: ReturnType<typeof setTimeout>;
 
   function reset() {
     clearTimeout(timeoutId);
